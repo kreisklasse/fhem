@@ -1,0 +1,7 @@
+define du_1024 dummy
+attr du_1024 room zzDummy,Info
+attr du_1024 readingList callsign4 alt4 lat4 long4 ltime4 ltimeunix4
+attr du_1024 alias 10+24
+attr du_1024 group GAF-A310
+attr du_1024 stateFormat ltime4 z | callsign4 | lat4  long4 | alt4 ft
+# fhem - adsbexchange
