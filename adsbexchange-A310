@@ -1,7 +1,162 @@
+
+# Daten bei adsbexchange abholen und in UserReadings (Zeit der letzte Position) umwandeln
+
+define ADSB HTTPMOD https://public-api.adsbexchange.com/VirtualRadar/AircraftList.json?fMilQ=true&fOpC=German&fTypC=A310 299
+attr ADSB extractAllJSON
+attr ADSB userattr getURL
+attr ADSB getURL https://public-api.adsbexchange.com/VirtualRadar/AircraftList.json?fMilQ=true&fOpC=German&fTypC=A310
+attr ADSB room zzWebReq,Info
+
+attr ADSB userReadings
+pos01utime { substr((ReadingsNum ("ADSB", "acList_01_PosTime","0")), 0, 10); },
+lmessage01 { strftime "%d.%m.%Y %H:%M:%S", gmtime( int(ReadingsVal ("ADSB","pos01utime", 0))); },
+pos02utime { substr((ReadingsNum ("ADSB", "acList_02_PosTime","0")), 0, 10); },
+lmessage02 { strftime "%d.%m.%Y %H:%M:%S", gmtime( int(ReadingsVal ("ADSB","pos02utime", 0))); },
+pos03utime { substr((ReadingsNum ("ADSB", "acList_03_PosTime","0")), 0, 10); },
+lmessage03 { strftime "%d.%m.%Y %H:%M:%S", gmtime( int(ReadingsVal ("ADSB","pos03utime", 0))); },
+pos04utime { substr((ReadingsNum ("ADSB", "acList_04_PosTime","0")), 0, 10); },
+lmessage04 { strftime "%d.%m.%Y %H:%M:%S", gmtime( int(ReadingsVal ("ADSB","pos04utime", 0))); },
+pos05utime { substr((ReadingsNum ("ADSB", "acList_05_PosTime","0")), 0, 10); },
+lmessage05 { strftime "%d.%m.%Y %H:%M:%S", gmtime( int(ReadingsVal ("ADSB","pos05utime", 0))); }
+
+
+# Dummy für jede Registration erstellen
+define du_1023 dummy
+attr du_1023 room zzDummy,Info
+attr du_1023 readingList callsign3 alt3 lat3 long3 ltime3 ltimeunix3
+attr du_1023 alias 10+23
+attr du_1023 group GAF-A310
+attr du_1023 stateFormat ltime3 z | callsign3 | lat3  long3 | alt3 ft
+attr du_1023 event-on-change-reading .*                # wegen DBlog, damit nur change geloggt wird
+
+
 define du_1024 dummy
 attr du_1024 room zzDummy,Info
 attr du_1024 readingList callsign4 alt4 lat4 long4 ltime4 ltimeunix4
 attr du_1024 alias 10+24
 attr du_1024 group GAF-A310
 attr du_1024 stateFormat ltime4 z | callsign4 | lat4  long4 | alt4 ft
-# fhem - adsbexchange
+attr du_1024 event-on-change-reading .*
+
+define du_1025 dummy
+attr du_1025 room zzDummy,Info
+attr du_1025 readingList call5 altsign5 lat5 long5 ltime5 ltimeunix5
+attr du_1025 alias 10+25
+attr du_1025 group GAF-A310
+attr du_1025 stateFormat ltime5 z | callsign5 | lat5  long5 | alt5 ft
+attr du_1025 event-on-change-reading .*
+
+define du_1026 dummy
+attr du_1026 room zzDummy,Info
+attr du_1026 readingList callsign6 alt6 lat6 long6 ltime6 ltimeunix6
+attr du_1026 alias 10+26
+attr du_1026 group GAF-A310
+attr du_1026 stateFormat ltime6 z | callsign6 | lat6  long6 | alt6 ft
+attr du_1026 event-on-change-reading .*
+
+define du_1027 dummy
+attr du_1027 room zzDummy,Info
+attr du_1027 readingList callsign7 alt7 lat7 long7 ltime7 ltimeunix7
+attr du_1027 alias 10+27
+attr du_1027 group GAF-A310
+attr du_1027 stateFormat ltime7 z | callsign7 | lat7  long7 | alt7 ft
+attr du_1027 event-on-change-reading .*
+
+
+
+
+# DOIF’s für jede Registration
+
+# 1023 Änderungsstand 08.01.2017 - Typos chnaged ltimeunix1 -> 3
+define di_1023 DOIF ([ADSB:acList_01_Reg] eq "10+23" and [ADSB:pos01utime] > [du_1023:ltimeunix3]) (setreading du_1023 ltimeunix3 [ADSB:pos01utime], setreading du_1023 callsign3 [ADSB:acList_01_Call], setreading du_1023 alt3 [ADSB:acList_01_Alt], setreading du_1023 lat3 [ADSB:acList_01_Lat], setreading du_1023 long3 [ADSB:acList_01_Long], setreading du_1023 ltime3 [ADSB:lmessage01]) DOELSEIF ([ADSB:acList_02_Reg] eq "10+23" and [ADSB:pos02utime] > [du_1023:ltimeunix3]) (setreading du_1023 ltimeunix3 [ADSB:pos02utime], setreading du_1023 callsign3 [ADSB:acList_02_Call], setreading du_1023 alt3 [ADSB:acList_02_Alt], setreading du_1023 lat3 [ADSB:acList_02_Lat], setreading du_1023 long3 [ADSB:acList_02_Long], setreading du_1023 ltime3 [ADSB:lmessage02]) DOELSEIF ([ADSB:acList_03_Reg] eq "10+23" and [ADSB:pos03utime] > [du_1023:ltimeunix3]) (setreading du_1023 ltimeunix3 [ADSB:pos03utime], setreading du_1023 callsign3 [ADSB:acList_03_Call], setreading du_1023 alt3 [ADSB:acList_03_Alt], setreading du_1023 lat3 [ADSB:acList_03_Lat], setreading du_1023 long3 [ADSB:acList_03_Long], setreading du_1023 ltime3 [ADSB:lmessage03]) DOELSEIF ([ADSB:acList_04_Reg] eq "10+23" and [ADSB:pos04utime] > [du_1023:ltimeunix3]) (setreading du_1023 ltimeunix3 [ADSB:pos04utime], setreading du_1023 callsign3 [ADSB:acList_04_Call], setreading du_1023 alt3 [ADSB:acList_04_Alt], setreading du_1023 lat3 [ADSB:acList_04_Lat], setreading du_1023 long3 [ADSB:acList_04_Long], setreading du_1023 ltime3 [ADSB:lmessage04]) DOELSEIF ([ADSB:acList_05_Reg] eq "10+23" and [ADSB:pos05utime] > [du_1023:ltimeunix3]) (setreading du_1023 ltimeunix3 [ADSB:pos05utime], setreading du_1023 callsign3 [ADSB:acList_05_Call], setreading du_1023 alt3 [ADSB:acList_05_Alt], setreading du_1023 lat3 [ADSB:acList_05_Lat], setreading du_1023 long3 [ADSB:acList_05_Long], setreading du_1023 ltime3 [ADSB:lmessage05])
+
+attr di_1023 do always
+attr di_1023 room zzDOIF
+attr di_1023 DbLogExclude .*
+attr di_1023 event-on-change-reading .*
+
+
+
+
+
+
+
+
+# 1024 -- 08.01.2017 - Typos chnaged ltimeunix1 -> 4
+define di_1024 DOIF ([ADSB:acList_01_Reg] eq "10+24" and [ADSB:pos01utime] > [du_1024:ltimeunix4]) (setreading du_1024 ltimeunix4 [ADSB:pos01utime], setreading du_1024 callsign4 [ADSB:acList_01_Call], setreading du_1024 alt4 [ADSB:acList_01_Alt], setreading du_1024 lat4 [ADSB:acList_01_Lat], setreading du_1024 long4 [ADSB:acList_01_Long], setreading du_1024 ltime4 [ADSB:lmessage01]) DOELSEIF ([ADSB:acList_02_Reg] eq "10+24" and [ADSB:pos02utime] > [du_1024:ltimeunix4]) (setreading du_1024 ltimeunix4 [ADSB:pos02utime], setreading du_1024 callsign4 [ADSB:acList_02_Call], setreading du_1024 alt4 [ADSB:acList_02_Alt], setreading du_1024 lat4 [ADSB:acList_02_Lat], setreading du_1024 long4 [ADSB:acList_02_Long], setreading du_1024 ltime4 [ADSB:lmessage02]) DOELSEIF ([ADSB:acList_03_Reg] eq "10+24" and [ADSB:pos03utime] > [du_1024:ltimeunix4]) (setreading du_1024 ltimeunix4 [ADSB:pos03utime], setreading du_1024 callsign4 [ADSB:acList_03_Call], setreading du_1024 alt4 [ADSB:acList_03_Alt], setreading du_1024 lat4 [ADSB:acList_03_Lat], setreading du_1024 long4 [ADSB:acList_03_Long], setreading du_1024 ltime4 [ADSB:lmessage03]) DOELSEIF ([ADSB:acList_04_Reg] eq "10+24" and [ADSB:pos04utime] > [du_1024:ltimeunix4]) (setreading du_1024 ltimeunix4 [ADSB:pos04utime], setreading du_1024 callsign4 [ADSB:acList_04_Call], setreading du_1024 alt4 [ADSB:acList_04_Alt], setreading du_1024 lat4 [ADSB:acList_04_Lat], setreading du_1024 long4 [ADSB:acList_04_Long], setreading du_1024 ltime4 [ADSB:lmessage04]) DOELSEIF ([ADSB:acList_05_Reg] eq "10+24" and [ADSB:pos05utime] > [du_1024:ltimeunix4]) (setreading du_1024 ltimeunix4 [ADSB:pos05utime], setreading du_1024 callsign4 [ADSB:acList_05_Call], setreading du_1024 alt4 [ADSB:acList_05_Alt], setreading du_1024 lat4 [ADSB:acList_05_Lat], setreading du_1024 long4 [ADSB:acList_05_Long], setreading du_1024 ltime4 [ADSB:lmessage05])
+
+attr di_1024 do always
+attr di_1024 room zzDOIF
+attr di_1024 DbLogExclude .*
+attr di_1024 event-on-change-reading .*
+
+
+
+
+
+
+
+
+
+
+# 1025 -- 08.01.2017 - Typos chnaged ltimeunix1 -> 5
+define di_1025 DOIF ([ADSB:acList_01_Reg] eq "10+25" and [ADSB:pos01utime] > [du_1025:ltimeunix5]) (setreading du_1025 ltimeunix5 [ADSB:pos01utime], setreading du_1025 callsign5 [ADSB:acList_01_Call], setreading du_1025 alt5 [ADSB:acList_01_Alt], setreading du_1025 lat5 [ADSB:acList_01_Lat], setreading du_1025 long5 [ADSB:acList_01_Long], setreading du_1025 ltime5 [ADSB:lmessage01]) DOELSEIF ([ADSB:acList_02_Reg] eq "10+25" and [ADSB:pos02utime] > [du_1025:ltimeunix5]) (setreading du_1025 ltimeunix5 [ADSB:pos02utime], setreading du_1025 callsign5 [ADSB:acList_02_Call], setreading du_1025 alt5 [ADSB:acList_02_Alt], setreading du_1025 lat5 [ADSB:acList_02_Lat], setreading du_1025 long5 [ADSB:acList_02_Long], setreading du_1025 ltime5 [ADSB:lmessage02]) DOELSEIF ([ADSB:acList_03_Reg] eq "10+25" and [ADSB:pos03utime] > [du_1025:ltimeunix5]) (setreading du_1025 ltimeunix5 [ADSB:pos03utime], setreading du_1025 callsign5 [ADSB:acList_03_Call], setreading du_1025 alt5 [ADSB:acList_03_Alt], setreading du_1025 lat5 [ADSB:acList_03_Lat], setreading du_1025 long5 [ADSB:acList_03_Long], setreading du_1025 ltime5 [ADSB:lmessage03]) DOELSEIF ([ADSB:acList_04_Reg] eq "10+25" and [ADSB:pos04utime] > [du_1025:ltimeunix5]) (setreading du_1025 ltimeunix5 [ADSB:pos04utime], setreading du_1025 callsign5 [ADSB:acList_04_Call], setreading du_1025 alt5 [ADSB:acList_04_Alt], setreading du_1025 lat5 [ADSB:acList_04_Lat], setreading du_1025 long5 [ADSB:acList_04_Long], setreading du_1025 ltime5 [ADSB:lmessage04]) DOELSEIF ([ADSB:acList_05_Reg] eq "10+25" and [ADSB:pos05utime] > [du_1025:ltimeunix5]) (setreading du_1025 ltimeunix5 [ADSB:pos05utime], setreading du_1025 callsign5 [ADSB:acList_05_Call], setreading du_1025 alt5 [ADSB:acList_05_Alt], setreading du_1025 lat5 [ADSB:acList_05_Lat], setreading du_1025 long5 [ADSB:acList_05_Long], setreading du_1025 ltime5 [ADSB:lmessage05])
+
+attr di_1025 do always
+attr di_1025 room zzDOIF
+attr di_1025 DbLogExclude .*
+attr di_1025 event-on-change-reading .*
+
+
+
+
+
+
+
+
+
+
+
+
+# 10+26 -- 08.01.2017 - Typos chnaged ltimeunix1 -> 6
+define di_1026 DOIF ([ADSB:acList_01_Reg] eq "10+26" and [ADSB:pos01utime] > [du_1026:ltimeunix6]) (setreading du_1026 ltimeunix6 [ADSB:pos01utime], setreading du_1026 callsign6 [ADSB:acList_01_Call], setreading du_1026 alt6 [ADSB:acList_01_Alt], setreading du_1026 lat6 [ADSB:acList_01_Lat], setreading du_1026 long6 [ADSB:acList_01_Long], setreading du_1026 ltime6 [ADSB:lmessage01]) DOELSEIF ([ADSB:acList_02_Reg] eq "10+26" and [ADSB:pos02utime] > [du_1026:ltimeunix6]) (setreading du_1026 ltimeunix6 [ADSB:pos02utime], setreading du_1026 callsign6 [ADSB:acList_02_Call], setreading du_1026 alt6 [ADSB:acList_02_Alt], setreading du_1026 lat6 [ADSB:acList_02_Lat], setreading du_1026 long6 [ADSB:acList_02_Long], setreading du_1026 ltime6 [ADSB:lmessage02]) DOELSEIF ([ADSB:acList_03_Reg] eq "10+26" and [ADSB:pos03utime] > [du_1026:ltimeunix6]) (setreading du_1026 ltimeunix6 [ADSB:pos03utime], setreading du_1026 callsign6 [ADSB:acList_03_Call], setreading du_1026 alt6 [ADSB:acList_03_Alt], setreading du_1026 lat6 [ADSB:acList_03_Lat], setreading du_1026 long6 [ADSB:acList_03_Long], setreading du_1026 ltime6 [ADSB:lmessage03]) DOELSEIF ([ADSB:acList_04_Reg] eq "10+26" and [ADSB:pos04utime] > [du_1026:ltimeunix6]) (setreading du_1026 ltimeunix6 [ADSB:pos04utime], setreading du_1026 callsign6 [ADSB:acList_04_Call], setreading du_1026 alt6 [ADSB:acList_04_Alt], setreading du_1026 lat6 [ADSB:acList_04_Lat], setreading du_1026 long6 [ADSB:acList_04_Long], setreading du_1026 ltime6 [ADSB:lmessage04]) DOELSEIF ([ADSB:acList_05_Reg] eq "10+26" and [ADSB:pos05utime] > [du_1026:ltimeunix6]) (setreading du_1026 ltimeunix6 [ADSB:pos05utime], setreading du_1026 callsign6 [ADSB:acList_05_Call], setreading du_1026 alt6 [ADSB:acList_05_Alt], setreading du_1026 lat6 [ADSB:acList_05_Lat], setreading du_1026 long6 [ADSB:acList_05_Long], setreading du_1026 ltime6 [ADSB:lmessage05])
+
+attr di_1026 do always
+attr di_1026 room zzDOIF
+attr di_1026 DbLogExclude .*
+attr di_1026 event-on-change-reading .*
+
+
+
+
+
+
+
+
+
+
+
+
+# 1027 -- 06.01.2017
+define di_1027 DOIF ([ADSB:acList_01_Reg] eq "10+27" and [ADSB:pos01utime] > [du_1027:ltimeunix7]) (setreading du_1027 ltimeunix7 [ADSB:pos01utime], setreading du_1027 callsign7 [ADSB:acList_01_Call], setreading du_1027 alt7 [ADSB:acList_01_Alt], setreading du_1027 lat7 [ADSB:acList_01_Lat], setreading du_1027 long7 [ADSB:acList_01_Long], setreading du_1027 ltime7 [ADSB:lmessage01]) DOELSEIF ([ADSB:acList_02_Reg] eq "10+27" and [ADSB:pos02utime] > [du_1027:ltimeunix7]) (setreading du_1027 ltimeunix7 [ADSB:pos02utime], setreading du_1027 callsign7 [ADSB:acList_02_Call], setreading du_1027 alt7 [ADSB:acList_02_Alt], setreading du_1027 lat7 [ADSB:acList_02_Lat], setreading du_1027 long7 [ADSB:acList_02_Long], setreading du_1027 ltime7 [ADSB:lmessage02]) DOELSEIF ([ADSB:acList_03_Reg] eq "10+27" and [ADSB:pos03utime] > [du_1027:ltimeunix7]) (setreading du_1027 ltimeunix7 [ADSB:pos03utime], setreading du_1027 callsign7 [ADSB:acList_03_Call], setreading du_1027 alt7 [ADSB:acList_03_Alt], setreading du_1027 lat7 [ADSB:acList_03_Lat], setreading du_1027 long7 [ADSB:acList_03_Long], setreading du_1027 ltime7 [ADSB:lmessage03]) DOELSEIF ([ADSB:acList_04_Reg] eq "10+27" and [ADSB:pos04utime] > [du_1027:ltimeunix7]) (setreading du_1027 ltimeunix7 [ADSB:pos04utime], setreading du_1027 callsign7 [ADSB:acList_04_Call], setreading du_1027 alt7 [ADSB:acList_04_Alt], setreading du_1027 lat7 [ADSB:acList_04_Lat], setreading du_1027 long7 [ADSB:acList_04_Long], setreading du_1027 ltime7 [ADSB:lmessage04]) DOELSEIF ([ADSB:acList_05_Reg] eq "10+27" and [ADSB:pos05utime] > [du_1027:ltimeunix7]) (setreading du_1027 ltimeunix7 [ADSB:pos05utime], setreading du_1027 callsign7 [ADSB:acList_05_Call], setreading du_1027 alt7 [ADSB:acList_05_Alt], setreading du_1027 lat7 [ADSB:acList_05_Lat], setreading du_1027 long7 [ADSB:acList_05_Long], setreading du_1027 ltime7 [ADSB:lmessage05])
+
+attr di_1027 do always
+attr di_1027 room zzDOIF
+attr di_1027 DbLogExclude .*
+attr di_1027 event-on-change-reading .*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
