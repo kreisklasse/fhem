@@ -1,5 +1,3 @@
-adsbexchange.com GAF A310 Daten auslesen                                    08.01.2017
-
 
 # Daten bei adsbexchange abholen und in UserReadings (Zeit der letzte Position) umwandeln
 
@@ -84,8 +82,6 @@ attr di_1023 event-on-change-reading .*
 
 
 
-
-
 # 1024 -- 08.01.2017 - Typos chnaged ltimeunix1 -> 4
 define di_1024 DOIF ([ADSB:acList_01_Reg] eq "10+24" and [ADSB:pos01utime] > [du_1024:ltimeunix4]) (setreading du_1024 ltimeunix4 [ADSB:pos01utime], setreading du_1024 callsign4 [ADSB:acList_01_Call], setreading du_1024 alt4 [ADSB:acList_01_Alt], setreading du_1024 lat4 [ADSB:acList_01_Lat], setreading du_1024 long4 [ADSB:acList_01_Long], setreading du_1024 ltime4 [ADSB:lmessage01]) DOELSEIF ([ADSB:acList_02_Reg] eq "10+24" and [ADSB:pos02utime] > [du_1024:ltimeunix4]) (setreading du_1024 ltimeunix4 [ADSB:pos02utime], setreading du_1024 callsign4 [ADSB:acList_02_Call], setreading du_1024 alt4 [ADSB:acList_02_Alt], setreading du_1024 lat4 [ADSB:acList_02_Lat], setreading du_1024 long4 [ADSB:acList_02_Long], setreading du_1024 ltime4 [ADSB:lmessage02]) DOELSEIF ([ADSB:acList_03_Reg] eq "10+24" and [ADSB:pos03utime] > [du_1024:ltimeunix4]) (setreading du_1024 ltimeunix4 [ADSB:pos03utime], setreading du_1024 callsign4 [ADSB:acList_03_Call], setreading du_1024 alt4 [ADSB:acList_03_Alt], setreading du_1024 lat4 [ADSB:acList_03_Lat], setreading du_1024 long4 [ADSB:acList_03_Long], setreading du_1024 ltime4 [ADSB:lmessage03]) DOELSEIF ([ADSB:acList_04_Reg] eq "10+24" and [ADSB:pos04utime] > [du_1024:ltimeunix4]) (setreading du_1024 ltimeunix4 [ADSB:pos04utime], setreading du_1024 callsign4 [ADSB:acList_04_Call], setreading du_1024 alt4 [ADSB:acList_04_Alt], setreading du_1024 lat4 [ADSB:acList_04_Lat], setreading du_1024 long4 [ADSB:acList_04_Long], setreading du_1024 ltime4 [ADSB:lmessage04]) DOELSEIF ([ADSB:acList_05_Reg] eq "10+24" and [ADSB:pos05utime] > [du_1024:ltimeunix4]) (setreading du_1024 ltimeunix4 [ADSB:pos05utime], setreading du_1024 callsign4 [ADSB:acList_05_Call], setreading du_1024 alt4 [ADSB:acList_05_Alt], setreading du_1024 lat4 [ADSB:acList_05_Lat], setreading du_1024 long4 [ADSB:acList_05_Long], setreading du_1024 ltime4 [ADSB:lmessage05])
 
@@ -93,8 +89,6 @@ attr di_1024 do always
 attr di_1024 room zzDOIF
 attr di_1024 DbLogExclude .*
 attr di_1024 event-on-change-reading .*
-
-
 
 
 
