@@ -1,4 +1,3 @@
-
 # Daten bei adsbexchange abholen und in UserReadings (Zeit der letzte Position) umwandeln
 
 define ADSB HTTPMOD https://public-api.adsbexchange.com/VirtualRadar/AircraftList.json?fMilQ=true&fOpC=German&fTypC=A310 299
@@ -19,7 +18,6 @@ lmessage04 { strftime "%d.%m.%Y %H:%M:%S", gmtime( int(ReadingsVal ("ADSB","pos0
 pos05utime { substr((ReadingsNum ("ADSB", "acList_05_PosTime","0")), 0, 10); },
 lmessage05 { strftime "%d.%m.%Y %H:%M:%S", gmtime( int(ReadingsVal ("ADSB","pos05utime", 0))); }
 
-
 # Dummy für jede Registration erstellen
 define du_1023 dummy
 attr du_1023 room zzDummy,Info
@@ -28,7 +26,6 @@ attr du_1023 alias 10+23
 attr du_1023 group GAF-A310
 attr du_1023 stateFormat ltime3 z | callsign3 | lat3  long3 | alt3 ft
 attr du_1023 event-on-change-reading .*                # wegen DBlog, damit nur change geloggt wird
-
 
 define du_1024 dummy
 attr du_1024 room zzDummy,Info
