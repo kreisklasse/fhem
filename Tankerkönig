@@ -1,5 +1,5 @@
 # Kraftstoffpreise von Tankerkönig.de
-
+#
 # Zum Testen einfach die URLs im Browser öffnen.
 # URL für Tankstellenliste:
 # https://creativecommons.tankerkoenig.de/json/list.php?lat=52.52099975265203&lng=13.43803882598877&rad=4&sort=price&type=diesel&apikey=a3de1edb-2025-54d6-a52d-692fc70561d1
@@ -8,8 +8,8 @@
 #
 # Tankerkönig apikey	wird benötigt
 #
-# Mundorf Kaldauen	2025cec6-d76f-422b-b305-fe6b75be12e9
-# Star Zeithstr.		005056ba-7cb6-1ed2-bceb-87412ca64d30
+# Tankstelle Mundorf Kaldauen  2025cec6-d76f-422b-b305-fe6b75be12e9
+# Tankstelle Star Zeithstr.    005056ba-7cb6-1ed2-bceb-87412ca64d30
 #
 # http://www.cyberwulf.de/2016/fhem-spritpreise-von-tankerkoenig-de/
 
