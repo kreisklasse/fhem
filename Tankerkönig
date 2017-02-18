@@ -1,0 +1,55 @@
+# Kraftstoffpreise von Tankerkönig.de
+
+# Zum Testen einfach die URLs im Browser öffnen.
+# URL für Tankstellenliste:
+# https://creativecommons.tankerkoenig.de/json/list.php?lat=52.52099975265203&lng=13.43803882598877&rad=4&sort=price&type=diesel&apikey=a3de1edb-2025-54d6-a52d-692fc70561d1
+# URL für Details einer Tankstelle:
+# https://creativecommons.tankerkoenig.de/json/detail.php?id=005056ba-7cb6-1ed2-bceb-90e59ad2cd35&apikey=a3de1edb-2025-54d6-a52d-692fc70561d1
+#
+# Tankerkönig apikey	wird benötigt
+#
+# Mundorf Kaldauen	2025cec6-d76f-422b-b305-fe6b75be12e9
+# Star Zeithstr.		005056ba-7cb6-1ed2-bceb-87412ca64d30
+#
+# http://www.cyberwulf.de/2016/fhem-spritpreise-von-tankerkoenig-de/
+
+
+# Tankstelle Mundorf Kaldauen
+
+define TS.Station.Mund HTTPMOD https://creativecommons.tankerkoenig.de/json/detail.php?id=2025cec6-d76f-422b-b305-fe6b75be12e9&apikey=aaaaa 900
+
+attr TS.Station.Mund userattr event-min-interval event-on-update-reading icon reading1Name reading1Regex reading2Name reading2Regex reading3Name reading3Regex requestHeader stateFormat timeout
+
+attr TS.Station.Mund alias Tankstelle Mundorf Kaldauen
+attr TS.Station.Mund timeout 5
+attr TS.Station.Mund event-on-update-reading .*
+attr TS.Station.Mund group Spritpreise
+attr TS.Station.Mund icon car
+attr TS.Station.Mund reading1Name Diesel
+attr TS.Station.Mund reading1Regex diesel":([\d\.]+)
+attr TS.Station.Mund reading2Name Super_E10
+attr TS.Station.Mund reading2Regex e10":([\d\.]+)
+attr TS.Station.Mund reading3Name Super_E5
+attr TS.Station.Mund reading3Regex e5":([\d\.]+)
+attr TS.Station.Mund requestHeader Content-Type: application/json
+attr TS.Station.Mund stateFormat {sprintf("Diesel %.3f €\n SuperE10 %.3f €\n SuperE5 %.3f €", ReadingsVal($name,"Diesel",0), ReadingsVal($name,"Super_E10",0), ReadingsVal($name,"Super_E5",0))}
+
+# Tankstelle Star Zeithstraße
+
+define TS.Station.Zeit HTTPMOD https://creativecommons.tankerkoenig.de/json/detail.php?id=005056ba-7cb6-1ed2-bceb-87412ca64d30&apikey=aaaaa 900
+
+attr TS.Station.Zeit userattr event-min-interval event-on-update-reading icon reading1Name reading1Regex reading2Name reading2Regex reading3Name reading3Regex requestHeader stateFormat timeout
+
+attr TS.Station.Zeit alias Tankstelle Star Zeitstr
+attr TS.Station.Zeit timeout 5
+attr TS.Station.Zeit event-on-update-reading .*
+attr TS.Station.Zeit group Spritpreise
+attr TS.Station.Zeit icon car
+attr TS.Station.Zeit reading1Name Diesel
+attr TS.Station.Zeit reading1Regex diesel":([\d\.]+)
+attr TS.Station.Zeit reading2Name Super_E10
+attr TS.Station.Zeit reading2Regex e10":([\d\.]+)
+attr TS.Station.Zeit reading3Name Super_E5
+attr TS.Station.Zeit reading3Regex e5":([\d\.]+)
+attr TS.Station.Zeit requestHeader Content-Type: application/json
+attr TS.Station.Zeit stateFormat {sprintf("Diesel %.3f €\n SuperE10 %.3f €\n SuperE5 %.3f €", ReadingsVal($name,"Diesel",0), ReadingsVal($name,"Super_E10",0), ReadingsVal($name,"Super_E5",0))}
