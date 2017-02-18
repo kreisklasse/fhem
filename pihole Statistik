@@ -1,0 +1,9 @@
+# AdBlock (Pihole) Statistik auslesen und in fhem anzeigen
+# https://pi-hole.net/
+
+define AdBlockInfo HTTPMOD http://127.0.0.1/admin/api.php 120
+attr AdBlockInfo extractAllJSON
+attr AdBlockInfo userattr getURL
+attr AdBlockInfo getURL http://127.0.0.1/admin/api.php
+attr AdBlockInfo stateFormat DNS Anfragen: dns_queries_today | Geblockte Werbung : ads_blocked_today (ads_percentage_today %)
+attr AdBlockInfo room Info
