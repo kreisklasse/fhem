@@ -1,0 +1,139 @@
+# Fritzbox zu fhem hinzufügen
+
+define Fritzbox FBAHA 192.168.x.x:2002
+
+
+# FritzBox Callmonitor einrichten
+# https://waschto.eu/anrufliste-der-fritzbox
+
+define FritzCallMon FB_CALLMONITOR 192.168.x.x
+
+# mit
+#   #96*5* - Callmonitor aktivieren (wählen und warten bis sich Mobilteil selbst abschaltet
+#   #96*4* - Callmonitor deaktivieren
+# freischalten
+
+attr FritzCallMon answMachine-is-missed-call 1
+attr FritzCallMon local-area-code 02xxxxxx
+attr FritzCallMon reverse-search dasoertliche.de,klicktel.de
+attr FritzCallMon reverse-search-cache 1
+attr FritzCallMon reverse-search-cache-file /opt/fhem/log/reverse_search.txt
+
+attr FritzCallMon room zzHardware
+attr FritzCallMon unique-call-ids 1
+
+# FritzBox Callliste einrichten
+define FritzCallList FB_CALLLIST FritzCallMon
+
+attr FritzCallList visible-columns state,timestamp,name,number
+attr FritzCallList language de
+attr FritzCallList answMachine-is-missed-call 1
+attr FritzCallList list-order descending
+attr FritzCallList event-on-change-reading .*
+attr FritzCallList room zzHardware,Info
+
+
+# Fritzbox hinzufügen - via FRITZBOX modul
+# https://waschto.eu/fritzbox
+
+sudo apt-get install libjson-perl libwww-perl libsoap-lite-perl libjson-xs-perl  libnet-telnet-perl libmath-round-perl
+
+
+define FritzBoxOP FRITZBOX 192.168.x.x
+
+set FritzBoxOP password xxxPasswort
+
+attr FritzBoxOP room zzHardware
+attr FritzBoxOP allowTR064Command 1
+attr FritzBoxOP DbLogExclude .*
+
+# Fritzbox Traffic
+# https://waschto.eu/traffic
+# https://forum.fhem.de/index.php?topic=17743.0  (Math:Round)
+
+
+define at_FBOPTraffic at +*00:06:00 xx
+attr at_FBOPTraffic room zzAT
+attr at_FBOPTraffic DbLogExclude .*
+
+define du_FBOPTrIN dummy
+attr du_FBOPTrIN room zzDummy
+
+define du_FBOPTrOUT dummy
+attr du_FBOPTrOUT room zzDummy
+
+
+DEF in at_FBOPTraffic
+{ use Math::Round qw/round/;
+ my $d= ((ReadingsVal("FritzBoxOP",".box_TodayBytesReceivedLow",0) / (1000*1000) ) / 1000 + ( ReadingsVal("FritzBoxOP",".box_TodayBytesReceivedHigh",0) * 4294967296 / (1000*1000) ) / 1000);
+$d = Math::Round::nearest('0.1',$d);
+fhem("setreading du_FBOPTrIN Empfangen $d");my $e= ((ReadingsVal("FritzBoxOP",".box_TodayBytesSentLow",0) / (1000*1000) ) / 1000 + ( ReadingsVal("FritzBoxOP",".box_TodayBytesSentHigh",0) * 4294967296 / (1000*1000) ) / 1000);
+$e = Math::Round::nearest('0.1',$e);
+fhem("setreading du_FBOPTrOUT Gesendet $e");
+}
+
+
+attr du_FBOPTrOUT userReadings Gesendet_ges monotonic { ReadingsVal("du_FBOPTrOUT","Gesendet",0)}
+attr du_FBOPTrOUT stateFormat {sprintf("Heute: %.2f GB | Gesamt: %.2f GB",ReadingsVal("du_FBOPTrOUT","Gesendet",0),ReadingsVal("du_FBOPTrOUT","Gesendet_ges",0))}
+
+attr du_FBOPTrIN userReadings Empfangen_ges monotonic { ReadingsVal("du_FBOPTrIN","Empfangen",0)}
+attr du_FBOPTrIN stateFormat {sprintf("Heute: %.2f GB | Gesamt: %.2f GB",ReadingsVal("du_FBOPTrIN","Empfangen",0),ReadingsVal("du_FBOPTrIN","Empfangen_ges",0))}
+
+
+
+# Fritzbox 2 hinzufügen - via FRITZBOX modul
+define FritzBoxNeu FRITZBOX 192.168.y.y
+
+set FritzBoxNeu password xxxPasswort
+
+attr FritzBoxNeu room zzHardware
+attr FritzBoxNeu allowTR064Command 1
+attr FritzBoxNeu DbLogExclude .*
+
+define at_FBNeuTraffic at +*00:15:00 xx
+attr at_FBNeuTraffic room zzAT
+attr at_FBNeuTraffic DbLogExclude .*
+
+define du_FBNeuTrIN dummy
+attr du_FBNeuTrIN room zzDummy
+
+define du_FBNeuTrOUT dummy
+attr du_FBNeuTrOUT room zzDummy
+
+
+DEF in at_FBOPTraffic
+{ use Math::Round qw/round/;
+ my $a= ((ReadingsVal("FritzBoxNeu",".box_TodayBytesReceivedLow",0) / (1000*1000) ) / 1000 + ( ReadingsVal("FritzBoxNeu",".box_TodayBytesReceivedHigh",0) * 4294967296 / (1000*1000) ) / 1000);
+$a = Math::Round::nearest('0.1',$a);
+fhem("setreading du_FBNeuTrIN Empfangen $a");my $b= ((ReadingsVal("FritzBoxNeu",".box_TodayBytesSentLow",0) / (1000*1000) ) / 1000 + ( ReadingsVal("FritzBoxNeu",".box_TodayBytesSentHigh",0) * 4294967296 / (1000*1000) ) / 1000);
+$b = Math::Round::nearest('0.1',$b);
+fhem("setreading du_FBNeuTrOUT Gesendet $b");
+}
+
+attr du_FBNeuTrOUT userReadings Gesendet_ges monotonic { ReadingsVal("du_FBNeuTrOUT","Gesendet",0)}
+attr du_FBNeuTrOUT stateFormat {sprintf("Heute: %.1f GB | Gesamt: %.1f GB",ReadingsVal("du_FBNeuTrOUT","Gesendet",0),ReadingsVal("du_FBNeuTrOUT","Gesendet_ges",0))}
+
+attr du_FBNeuTrIN userReadings Empfangen_ges monotonic { ReadingsVal("du_FBNeuTrIN","Empfangen",0)}
+attr du_FBNeuTrIN stateFormat {sprintf("Heute: %.1f GB | Gesamt: %.1f GB",ReadingsVal("du_FBNeuTrIN","Empfangen",0),ReadingsVal("du_FBNeuTrIN","Empfangen_ges",0))}
+
+
+# FritzBox 2 Callmonitor einrichten
+define FritzCallMonNeu FB_CALLMONITOR 192.168.y.y
+
+attr FritzCallMonNeu answMachine-is-missed-call 1
+attr FritzCallMonNeu local-area-code 08xxxxxx
+attr FritzCallMonNeu reverse-search dasoertliche.de,klicktel.de
+attr FritzCallMonNeu reverse-search-cache 1
+attr FritzCallMonNeu reverse-search-cache-file /opt/fhem/log/reverse_search.txt
+attr FritzCallMonNeu room zzHardware,Elt
+attr FritzCallMonNeu unique-call-ids 1
+
+# FritzBox 2 Callliste einrichten
+define FritzCallListNeu FB_CALLLIST FritzCallMonNeu
+
+attr FritzCallListNeu visible-columns state,timestamp,name,number
+attr FritzCallListNeu language de
+attr FritzCallListNeu answMachine-is-missed-call 1
+attr FritzCallListNeu list-order descending
+attr FritzCallListNeu event-on-change-reading .*
+attr FritzCallListNeu room zzHardware,Info,Elt
