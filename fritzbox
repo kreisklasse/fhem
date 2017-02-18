@@ -38,9 +38,7 @@ attr FritzCallList room zzHardware,Info
 
 sudo apt-get install libjson-perl libwww-perl libsoap-lite-perl libjson-xs-perl  libnet-telnet-perl libmath-round-perl
 
-
 define FritzBoxOP FRITZBOX 192.168.x.x
-
 set FritzBoxOP password xxxPasswort
 
 attr FritzBoxOP room zzHardware
@@ -50,7 +48,6 @@ attr FritzBoxOP DbLogExclude .*
 # Fritzbox Traffic
 # https://waschto.eu/traffic
 # https://forum.fhem.de/index.php?topic=17743.0  (Math:Round)
-
 
 define at_FBOPTraffic at +*00:06:00 xx
 attr at_FBOPTraffic room zzAT
@@ -63,7 +60,7 @@ define du_FBOPTrOUT dummy
 attr du_FBOPTrOUT room zzDummy
 
 
-DEF in at_FBOPTraffic
+# DEF in at_FBOPTraffic
 { use Math::Round qw/round/;
  my $d= ((ReadingsVal("FritzBoxOP",".box_TodayBytesReceivedLow",0) / (1000*1000) ) / 1000 + ( ReadingsVal("FritzBoxOP",".box_TodayBytesReceivedHigh",0) * 4294967296 / (1000*1000) ) / 1000);
 $d = Math::Round::nearest('0.1',$d);
@@ -80,11 +77,9 @@ attr du_FBOPTrIN userReadings Empfangen_ges monotonic { ReadingsVal("du_FBOPTrIN
 attr du_FBOPTrIN stateFormat {sprintf("Heute: %.2f GB | Gesamt: %.2f GB",ReadingsVal("du_FBOPTrIN","Empfangen",0),ReadingsVal("du_FBOPTrIN","Empfangen_ges",0))}
 
 
-
 # Fritzbox 2 hinzufügen - via FRITZBOX modul
 define FritzBoxNeu FRITZBOX 192.168.y.y
-
-set FritzBoxNeu password xxxPasswort
+set FritzBoxNeu password yyyPasswort
 
 attr FritzBoxNeu room zzHardware
 attr FritzBoxNeu allowTR064Command 1
@@ -101,7 +96,7 @@ define du_FBNeuTrOUT dummy
 attr du_FBNeuTrOUT room zzDummy
 
 
-DEF in at_FBOPTraffic
+# DEF in at_FBOPTraffic
 { use Math::Round qw/round/;
  my $a= ((ReadingsVal("FritzBoxNeu",".box_TodayBytesReceivedLow",0) / (1000*1000) ) / 1000 + ( ReadingsVal("FritzBoxNeu",".box_TodayBytesReceivedHigh",0) * 4294967296 / (1000*1000) ) / 1000);
 $a = Math::Round::nearest('0.1',$a);
