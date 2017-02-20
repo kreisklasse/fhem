@@ -1,0 +1,67 @@
+sudo raspi-config
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get clean
+
+# pi3 mit WLAN und Bluetooth
+# https://community.conrad.de/frage-ansehen/wie-wlan-stick-an-raspberry-pi-an-und-ausschalten
+# https://wiki.ubuntuusers.de/rfkill/
+
+sudo apt-get install rfkill
+
+# Uptime daemon installieren
+# http://blog.moneybag.de/raspberry-pi-uptimed-wie-lange-ist-euer-rpi-schon-online/
+
+sudo apt-get install uptimed
+
+
+# fail2ban installieren
+# https://waschto.eu/raspberry-im-internet-absichern
+# https://www.thomas-krenn.com/de/wiki/SSH_Login_unter_Debian_mit_fail2ban_absichern
+
+sudo apt-get install fail2ban
+
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+
+sudo nano /etc/fail2ban/jail.local
+# bei ssh in port = xxxx ändern
+
+sudo nano /etc/ssh/sshd_config
+#	  PermitRootLogin no
+# 	Port xxxx
+#
+# ssh neu starten
+# sudo /etc/init.d/sshd restart  (??)
+
+# fail2ban neu starten
+sudo /etc/init.d/fail2ban restart
+
+
+# Automatischer Zeit-Update
+# https://dokuwiki.nausch.org/doku.php/centos:ntp-zeitserver
+# https://raspberrypi.stackexchange.com/questions/10267/incorrect-time-until-i-restart-the-ntp-server-multiple-times
+# http://raspberrypi.tomasgreno.cz/ntp-client-and-server.html
+
+sudo nano /etc/ntp.conf
+      server 0.de.pool.ntp.org iburst
+      server 1.de.pool.ntp.org iburst
+      server 2.de.pool.ntp.org iburst
+      server 3.de.pool.ntp.org iburst
+      server time.google.com iburst
+      server ntp1.t-online.de iburst
+      server ntp0.ipv6.fau.de iburst
+      server ntp1.ipv6.fau.de iburst
+
+sudo nano /etc/systemd/timesyncd.conf
+      #Servers=192.168.0.1 ...
+
+sudo timedatectl set-ntp true
+
+timedatectl status
+
+# ntpd neu starten
+sudo /etc/init.d/ntp restart
+
+# den ntp checken
+
+watch ntpq -np
