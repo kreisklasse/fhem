@@ -52,7 +52,7 @@ sudo hg clone https://hg.prosody.im/prosody-modules/ prosody-modules
 # da kein autoupdate, deshalb von Zeit zu Zeit folgendes ausführen:
 #       cd /opt/prosody-modules/
 #       sudo hg update
-#				sudo hg pull
+#	sudo hg pull
 
 # Prosody Configuration anpassen
 
