@@ -288,6 +288,10 @@ define n_Jabber_Answer notify jabber:Message.* {sendJabberAnswer();;}
 # jeden Tag um 09:30 Uhr fhem Statusnachricht senden, siehe 99_myUtils unten 
 define at_jabbersendsstatus at *09:30:00 {sendMeStatusMsg();;}
 
+# sendet automatisch Nachricht nachdem fhem neu gestarted wurde
+define n_jabber_fhem_restart notify global:INITIALIZED set jabber msg NUTZERNAME2@hMEINJABBERSERVER.dedyn.io fhem wurde neu gestartet
+
+
 # 99_myUtils anlegen
 # http://www.fhemwiki.de/wiki/99_myUtils_anlegen
 #
