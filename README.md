@@ -12,3 +12,5 @@ Alles was man in fhem einbauen kann.
     - Statistik des laufenden https://pi-hole.net/ Ad-Blockers
 - tankerkönig
     - Benzinpreise von versch. Tankstellen abrufen und darstellen
+- jabber
+    - Jabber Server einrichten und Nachrichten von/an fhem senden
