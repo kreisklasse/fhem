@@ -4,7 +4,7 @@ define Fritzbox FBAHA 192.168.x.x:2002
 
 
 # FritzBox Callmonitor einrichten
-# https://waschto.eu/anrufliste-der-fritzbox
+# ungueltig ! https://waschto.eu/anrufliste-der-fritzbox
 
 define FritzCallMon FB_CALLMONITOR 192.168.x.x
 
@@ -34,7 +34,7 @@ attr FritzCallList room zzHardware,Info
 
 
 # Fritzbox hinzufügen - via FRITZBOX modul
-# https://waschto.eu/fritzbox
+# ungueltig ! https://waschto.eu/fritzbox
 
 sudo apt-get install libjson-perl libwww-perl libsoap-lite-perl libjson-xs-perl  libnet-telnet-perl libmath-round-perl
 
@@ -46,8 +46,9 @@ attr FritzBoxOP allowTR064Command 1
 attr FritzBoxOP DbLogExclude .*
 
 # Fritzbox Traffic
-# https://waschto.eu/traffic
+# ungueltig ! https://waschto.eu/traffic
 # https://forum.fhem.de/index.php?topic=17743.0  (Math:Round)
+# Math:Round --> evtl nicht installiert dann sudo apt-get install libmath-round-perl
 
 define at_FBOPTraffic at +*00:06:00 xx
 attr at_FBOPTraffic room zzAT
